@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package servlets;
 
 import java.io.IOException;
@@ -11,90 +7,116 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
-/**
- *
- * @author Admin
- */
 public class Homepage extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        PrintWriter out = response.getWriter();
+        
+         PrintWriter out = response.getWriter();
         try {
-            /* TODO output your page here. You may use following sample code. */
+        out.print(Statics.getHead("Homepage"));
+        Statement st = Statics.st;
+         ResultSet rs =  st.executeQuery("SELECT * FROM books");
+        try{
+            out.print("All the Books in the Library are Listed below:<br><br>"
+                    + "<div class='container'><table class='table'><tr><th>Id</th><th>Title</th><th>Author</th></tr>");
+           while(rs.next())
+           {
+               out.print("<tr>");
+               out.print("<td>"+rs.getString(1)+"</td>");
+               out.println("<td>"+rs.getString(2)+"</td>");
+                              out.println("<td>"+rs.getString(3)+"</td>");
+               out.print("</tr>");
+           }
+        }
+        catch(Exception e)
+        {
+            out.print(e);
+        }
+           out.print("</div></div></body></html>");
+//            response.sendRedirect("Welcome.html");
+        }
+        catch(Exception e){
+          
+            
+        }        finally {
+            out.close();
+        }
+       
+    }
+
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        HttpSession ss= request.getSession(false);
+        PrintWriter out = response.getWriter();
+//        out.print(ss.getAttribute("user"));
+        if(ss.getAttribute("user")==null)
+            response.sendRedirect("index.jsp");
+        else {
+            String driver = getServletConfig().getInitParameter("driver");
+            String db =  getServletConfig().getInitParameter("database");
+            try {
+                Class.forName(driver);
+            Connection con =  DriverManager.getConnection(db,"root", "");
+            Statement st =  con.createStatement();
+             Statics.driver = driver;
+            Statics.db = db;
+            Statics.st = st;
+            } catch (Exception e) {
+            }
+            processRequest(request, response);
+        }
+        
+                                                                                                
+    }
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+            PrintWriter out = response.getWriter();
+        
+        response.setContentType("text/html;charset=UTF-8");
+        try {
             String uname =request.getParameter("username");
             String pass =request.getParameter("password");
-            
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con =  DriverManager.getConnection("jdbc:mysql://localhost:3306/library","root", "");
+            String driver = getServletConfig().getInitParameter("driver");
+            String db =  getServletConfig().getInitParameter("database");
+            Class.forName(driver);
+            Connection con =  DriverManager.getConnection(db,"root", "");
             Statement st =  con.createStatement();
             String qur= "SELECT * FROM users where name='"+uname+"' and password ='"+pass+"';";
             
             ResultSet r= st.executeQuery(qur);
             r.first();
-           out.print( r.getString("name"));
-            response.sendRedirect("index.html");
+           HttpSession ss = request.getSession();
+           ss.setAttribute("user", uname);
+           ss.setAttribute("pass", pass);
+           ss.setAttribute("id", r.getString("id"));
+           out.print("new Session  "+(ss.getAttribute("user")));
+           Statics.driver = driver;
+            Statics.db = db;
+            Statics.st = st;
+            if(uname.equals("Admin")) response.sendRedirect("admin.html");
+            processRequest(request, response);
+        } catch (Exception e) {
+              
+            out.print("<div class=\"alert alert-danger\" role=\"alert\">\n" +
+" <center> Invalid Username or Password!</center>\n" +
+"</div>");
+            request.getRequestDispatcher("index.jsp").include(request, response);
         }
-        catch(Exception e){
-            
-            request.getRequestDispatcher("index.jsp").forward(request, response);
-        }        finally {
-            out.close();
-        }
+       
+        
+        
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <servlet>
+        <init-param>
+            <param-name>driver</param-name>
+            <param-value>com.mysql.jdbc.Driver</param-value>
+        </init-param>
+        <init-param>
+            <param-name>database</param-name>
+            <param-value>jdbc:mysql://localhost:3306/library</param-value>
+        </init-param>
         <servlet-name>Homepage</servlet-name>
         <servlet-class>servlets.Homepage</servlet-class>
     </servlet>
@@ -12,6 +20,50 @@
         <servlet-name>SignOut</servlet-name>
         <servlet-class>servlets.SignOut</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AddBook</servlet-name>
+        <servlet-class>servlets.AddBook</servlet-class>
+        <init-param>
+            <param-name>driver</param-name>
+            <param-value>com.mysql.jdbc.Driver</param-value>
+        </init-param>
+        <init-param>
+            <param-name>database</param-name>
+            <param-value>jdbc:mysql://localhost:3306/library</param-value>
+        </init-param>
+    </servlet>
+    <servlet>
+        <init-param>
+            <param-name>driver</param-name>
+            <param-value>com.mysql.jdbc.Driver</param-value>
+        </init-param>
+        <init-param>
+            <param-name>database</param-name>
+            <param-value>jdbc:mysql://localhost:3306/library</param-value>
+        </init-param>
+        <servlet-name>Profile</servlet-name>
+        <servlet-class>servlets.Profile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>IssueBook</servlet-name>
+        <servlet-class>servlets.IssueBook</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ReturnBook</servlet-name>
+        <servlet-class>servlets.ReturnBook</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RenewBook</servlet-name>
+        <servlet-class>servlets.RenewBook</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UsersList</servlet-name>
+        <servlet-class>servlets.UsersList</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Homepage</servlet-name>
+        <url-pattern>/welcome.html/</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Homepage</servlet-name>
         <url-pattern>/Homepage</url-pattern>
@@ -23,6 +75,30 @@
     <servlet-mapping>
         <servlet-name>SignOut</servlet-name>
         <url-pattern>/SignOut</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddBook</servlet-name>
+        <url-pattern>/AddBook</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Profile</servlet-name>
+        <url-pattern>/Profile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>IssueBook</servlet-name>
+        <url-pattern>/IssueBook</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ReturnBook</servlet-name>
+        <url-pattern>/ReturnBook</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RenewBook</servlet-name>
+        <url-pattern>/RenewBook</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UsersList</servlet-name>
+        <url-pattern>/UsersList</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
